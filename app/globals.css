@@ -189,10 +189,10 @@ button {
 .thread-card_bar {
   position: relative;
   margin-top: 0.5rem;
-  width: 2px;
+  width: 1px;
   flex-grow: 1;
   border-radius: 9999px;
-  background-color: #27272a;
+  background-color:  var(--color-gray-1);
 }
 
 .user-card {

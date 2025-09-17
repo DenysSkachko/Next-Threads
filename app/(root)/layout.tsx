@@ -1,5 +1,5 @@
 import { ClerkProvider } from '@clerk/nextjs'
-import { Inter } from 'next/font/google'
+import { Manrope } from 'next/font/google'
 import '../globals.css'
 import Topbar from '@/components/shared/Topbar'
 import LeftSidebar from '@/components/shared/LeftSidebar'
@@ -11,13 +11,17 @@ export const metadata = {
   description: 'A Next.js 14 meta Threads',
 }
 
-const inter = Inter({ subsets: ['latin'] })
+const manrope = Manrope({
+  subsets: ['latin'],
+  variable: '--font-manrope',
+  weight: ['400', '500', '600', '700'],
+})
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <ClerkProvider>
-      <html lang="en">
-        <body className={inter.className}>
+      <html lang="en" className={manrope.variable}>
+        <body className="font-manrope">
           <Topbar />
           <main className="flex">
             <LeftSidebar />

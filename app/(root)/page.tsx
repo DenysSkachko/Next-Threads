@@ -1,4 +1,5 @@
 import ThreadCard from '@/components/cards/ThreadCard'
+import { Button } from '@/components/ui/button'
 import { fetchPosts } from '@/lib/actions/thread.actions'
 import { currentUser } from '@clerk/nextjs/server'
 
@@ -8,7 +9,10 @@ export default async function Home() {
 
   return (
     <>
-      <h1 className="head-text text-left">Home</h1>
+      <div className="flex justify-between">
+        <h1 className="head-text text-left">What's New</h1>
+        <Button type="button" className="bg-primary-500">Create a thread</Button>
+      </div>
 
       <section className="mt-9 flex flex-col gap-10">
         {result.posts.length === 0 ? (
