@@ -44,7 +44,7 @@ const LeftSidebar = () => {
             </ButtonSmall>
           </SignOutButton>
 
-          <Link href="/edit">
+          <Link href="/profile/edit">
             <ButtonSmall className="bg-primary-500">
               <FiEdit size={25} className="text-light-1" />
             </ButtonSmall>

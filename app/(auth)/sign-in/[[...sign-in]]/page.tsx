@@ -23,11 +23,9 @@ export default function Page() {
     try {
       if (!signIn) throw new Error('SignIn not ready')
 
-      // Email / Password вход
       const result = await signIn.create({ identifier: email, password })
 
       if (result.status === 'complete') {
-        // Успешный вход → редирект на главную
         router.push('/')
       } else if (result.status === 'needs_first_factor') {
         setError('Additional verification required')
@@ -44,8 +42,8 @@ export default function Page() {
     try {
       await signIn.authenticateWithRedirect({
         strategy: provider === 'google' ? 'oauth_google' : 'oauth_github',
-        redirectUrl: '/', // промежуточный редирект (обычно тот же)
-        redirectUrlComplete: '/', // финальный редирект после успешного входа
+        redirectUrl: '/', 
+        redirectUrlComplete: '/', 
       })
     } catch (err: any) {
       setError(err.errors?.[0]?.longMessage || err.message || 'Something went wrong')
@@ -53,10 +51,10 @@ export default function Page() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-dark-1 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-dark-4 px-4">
       <div className="w-full max-w-md p-6 bg-dark-2 rounded-2xl shadow-xl">
         <h1 className="text-2xl font-bold text-light-1 mb-2 text-center">
-          Sign in to Proxima Threads
+          Sign in Proxima Threads
         </h1>
         <p className="text-gray-400 mb-6 text-center">Welcome back! Please sign in to continue</p>
 
@@ -65,8 +63,9 @@ export default function Page() {
             <label className="text-light-1 mb-1 block">Email address or username</label>
             <input
               type="text"
-              placeholder="sergey.marooov@gmail.com"
+              placeholder="Email"
               value={email}
+              autoComplete='off'
               onChange={e => setEmail(e.target.value)}
               className="bg-dark-3 text-light-1 border border-gray-700 rounded-md p-2 w-full placeholder-gray-500"
               required
@@ -79,6 +78,7 @@ export default function Page() {
               type="password"
               placeholder="•••••••••"
               value={password}
+              autoComplete='off'
               onChange={e => setPassword(e.target.value)}
               className="bg-dark-3 text-light-1 border border-gray-700 rounded-md p-2 w-full placeholder-gray-500"
               required
@@ -120,10 +120,6 @@ export default function Page() {
           <a href="/sign-up" className="text-primary-500 hover:underline">
             Sign up
           </a>
-        </p>
-
-        <p className="mt-6 text-gray-500 text-center text-xs">
-          Secured by <span className="font-semibold">Clerk</span>
         </p>
       </div>
     </div>

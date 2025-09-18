@@ -8,7 +8,12 @@ import Pagination from '@/components/shared/Pagination'
 import { fetchUser, fetchUsers } from '@/lib/actions/user.actions'
 import PageLabel from '@/components/ui/label-page'
 
-async function Page({ searchParams }: { searchParams: { [key: string]: string | undefined } }) {
+async function Page({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | undefined }>
+}) {
+  const params = await searchParams
   const user = await currentUser()
   if (!user) return null
 
@@ -17,24 +22,19 @@ async function Page({ searchParams }: { searchParams: { [key: string]: string | 
 
   const result = await fetchUsers({
     userId: user.id,
-    searchString: searchParams.q,
-    pageNumber: searchParams?.page ? +searchParams.page : 1,
+    searchString: params.q,
+    pageNumber: params?.page ? +params.page : 1,
     pageSize: 25,
   })
 
-  if(!result) {
+  if (!result) {
     return 1
   }
-
-  console.log(result)
 
   return (
     <section>
       <div className="flex items-center justify-between gap-2 h-10">
-        <PageLabel >
-           Search
-        </PageLabel>
-
+        <PageLabel>Search</PageLabel>
         <Searchbar routeType="search" />
       </div>
 
@@ -60,7 +60,7 @@ async function Page({ searchParams }: { searchParams: { [key: string]: string | 
 
       <Pagination
         path="search"
-        pageNumber={searchParams?.page ? +searchParams.page : 1}
+        pageNumber={params?.page ? +params.page : 1}
         isNext={result.isNext}
       />
     </section>

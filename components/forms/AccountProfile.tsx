@@ -150,11 +150,7 @@ const AccountProfile = ({ user, btnTitle }: AccountProfileProps) => {
             <FormItem className="flex flex-col gap-3 w-full">
               <FormLabel className="text-base-semibold text-light-2">Name</FormLabel>
               <FormControl>
-                <Input
-                  type="text"
-                  className="account-form_input no-focus"
-                  onChange={e => handleImage(e, field.onChange)}
-                />
+                <Input type="text" className="account-form_input no-focus" {...field} />
               </FormControl>
             </FormItem>
           )}
