@@ -130,8 +130,7 @@ button {
   display: flex;
   min-height: 100vh;
   flex: 1;
-  flex-direction: column;
-  align-items: center;
+  justify-content: center;
   padding: 112px 24px 40px;
   background-color: var(--color-dark-4);
 }
@@ -205,7 +204,7 @@ button {
   .user-card {
     border-radius: 0.75rem;
     background-color: var(--color-dark-3);
-    padding: 1rem;
+    padding: 0.5rem;
   }
 }
 @media (min-width: 400px) {
@@ -339,7 +338,7 @@ button {
   justify-content: flex-start;
   gap: 1rem;
   border-radius: 0.5rem;
-  padding: 1rem;
+  padding: 12px 24px;
 }
 
 .pagination {
@@ -365,7 +364,7 @@ button {
   overflow: auto;
   border-left: 1px solid var(--color-dark-4);
   background-color: var(--color-dark-2);
-  padding: 112px 40px 24px;
+  padding: 112px 20px 24px;
 }
 @media (max-width: 1280px) {
   .rightsidebar {
@@ -457,20 +456,6 @@ button {
   border-top: 1px solid var(--color-dark-4);
   border-bottom: 1px solid var(--color-dark-4);
   padding: 1.25rem 0;
-}
-.comment-form_btn {
-  border-radius: 9999px;
-  background-color: var(--color-primary-500);
-  padding: 0.5rem 2rem;
-  font-size: var(--font-small-regular);
-  line-height: var(--line-small-regular);
-  color: var(--color-light-1);
-  width: auto;
-}
-@media (max-width: 400px) {
-  .comment-form_btn {
-    width: 100%;
-  }
 }
 
 @theme inline {

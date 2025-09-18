@@ -1,11 +1,12 @@
-'use server'
+"use server";
 
-import { FilterQuery, SortOrder } from 'mongoose'
-import Community from '@/lib/models/community.model'
-import Thread from '@/lib/models/thread.model'
-import User from '@/lib/models/user.model'
-import { connectToDB } from '../mongoose'
-import mongoose from 'mongoose'
+import { FilterQuery, SortOrder } from "mongoose";
+
+import Community from "../models/community.model";
+import Thread from "../models/thread.model";
+import User from "../models/user.model";
+
+import { connectToDB } from "../mongoose";
 
 export async function createCommunity(
   id: string,
@@ -15,96 +16,209 @@ export async function createCommunity(
   bio: string,
   createdById: string
 ) {
-  await connectToDB()
-  const user = await User.findOne({ id: createdById })
-  if (!user) throw new Error('User not found')
-  const newCommunity = new Community({ id, name, username, image, bio, createdBy: user._id })
-  const createdCommunity = await newCommunity.save()
-  user.communities.push(createdCommunity._id)
-  await user.save()
-  return createdCommunity
+  try {
+    connectToDB();
+
+    const user = await User.findOne({ id: createdById });
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const newCommunity = new Community({
+      id,
+      name,
+      username,
+      image,
+      bio,
+      createdBy: user._id,
+    });
+
+    const createdCommunity = await newCommunity.save();
+
+    user.communities.push(createdCommunity._id);
+    await user.save();
+
+    return createdCommunity;
+  } catch (error) {
+    console.error("Error creating community:", error);
+    throw error;
+  }
 }
 
 export async function fetchCommunityDetails(id: string) {
-  await connectToDB()
-  const objectId = new mongoose.Types.ObjectId(id)
+  try {
+    connectToDB();
 
-  const communityDetails = await Community.findOne({ _id: objectId }).populate([
-    'createdBy',
-    { path: 'members', model: User, select: 'name username image _id id' },
-  ])
+    const communityDetails = await Community.findOne({ id }).populate([
+      "createdBy",
+      {
+        path: "members",
+        model: User,
+        select: "name username image _id id",
+      },
+    ]);
 
-  return communityDetails
+    return communityDetails;
+  } catch (error) {
+    console.error("Error fetching community details:", error);
+    throw error;
+  }
 }
 
 export async function fetchCommunityPosts(id: string) {
-  await connectToDB()
-  const communityPosts = await Community.findById(id).populate({
-    path: 'threads',
-    model: Thread,
-    populate: [
-      { path: 'author', model: User, select: 'name image id' },
-      {
-        path: 'children',
-        model: Thread,
-        populate: { path: 'author', model: User, select: 'image _id' },
-      },
-    ],
-  })
-  return communityPosts
+  try {
+    connectToDB();
+
+    const communityPosts = await Community.findById(id).populate({
+      path: "threads",
+      model: Thread,
+      populate: [
+        {
+          path: "author",
+          model: User,
+          select: "name image id", 
+        },
+        {
+          path: "children",
+          model: Thread,
+          populate: {
+            path: "author",
+            model: User,
+            select: "image _id",
+          },
+        },
+      ],
+    });
+
+    return communityPosts;
+  } catch (error) {
+    console.error("Error fetching community posts:", error);
+    throw error;
+  }
 }
 
 export async function fetchCommunities({
-  searchString = '',
+  searchString = "",
   pageNumber = 1,
   pageSize = 20,
-  sortBy = 'desc',
+  sortBy = "desc",
 }: {
-  searchString?: string
-  pageNumber?: number
-  pageSize?: number
-  sortBy?: SortOrder
+  searchString?: string;
+  pageNumber?: number;
+  pageSize?: number;
+  sortBy?: SortOrder;
 }) {
-  await connectToDB()
-  const skipAmount = (pageNumber - 1) * pageSize
-  const regex = new RegExp(searchString, 'i')
-  const query: FilterQuery<typeof Community> = {}
-  if (searchString.trim() !== '')
-    query.$or = [{ username: { $regex: regex } }, { name: { $regex: regex } }]
-  const communitiesQuery = Community.find(query)
-    .sort({ createdAt: sortBy })
-    .skip(skipAmount)
-    .limit(pageSize)
-    .populate('members')
-  const totalCommunitiesCount = await Community.countDocuments(query)
-  const communities = await communitiesQuery.exec()
-  const isNext = totalCommunitiesCount > skipAmount + communities.length
-  return { communities, isNext }
+  try {
+    connectToDB();
+
+    const skipAmount = (pageNumber - 1) * pageSize;
+
+    const regex = new RegExp(searchString, "i");
+
+    const query: FilterQuery<typeof Community> = {};
+
+    if (searchString.trim() !== "") {
+      query.$or = [
+        { username: { $regex: regex } },
+        { name: { $regex: regex } },
+      ];
+    }
+
+    const sortOptions = { createdAt: sortBy };
+
+    const communitiesQuery = Community.find(query)
+      .sort(sortOptions)
+      .skip(skipAmount)
+      .limit(pageSize)
+      .populate("members");
+
+    const totalCommunitiesCount = await Community.countDocuments(query);
+
+    const communities = await communitiesQuery.exec();
+
+    const isNext = totalCommunitiesCount > skipAmount + communities.length;
+
+    return { communities, isNext };
+  } catch (error) {
+    console.error("Error fetching communities:", error);
+    throw error;
+  }
 }
 
-export async function addMemberToCommunity(communityId: string, memberId: string) {
-  await connectToDB()
-  const community = await Community.findOne({ id: communityId })
-  if (!community) throw new Error('Community not found')
-  const user = await User.findOne({ id: memberId })
-  if (!user) throw new Error('User not found')
-  if (community.members.includes(user._id)) throw new Error('User is already a member')
-  community.members.push(user._id)
-  await community.save()
-  user.communities.push(community._id)
-  await user.save()
-  return community
+export async function addMemberToCommunity(
+  communityId: string,
+  memberId: string
+) {
+  try {
+    connectToDB();
+
+    const community = await Community.findOne({ id: communityId });
+
+    if (!community) {
+      throw new Error("Community not found");
+    }
+
+    const user = await User.findOne({ id: memberId });
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    if (community.members.includes(user._id)) {
+      throw new Error("User is already a member of the community");
+    }
+
+    community.members.push(user._id);
+    await community.save();
+
+    user.communities.push(community._id);
+    await user.save();
+
+    return community;
+  } catch (error) {
+    console.error("Error adding member to community:", error);
+    throw error;
+  }
 }
 
-export async function removeUserFromCommunity(userId: string, communityId: string) {
-  await connectToDB()
-  const userObj = await User.findOne({ id: userId }, { _id: 1 })
-  const communityObj = await Community.findOne({ id: communityId }, { _id: 1 })
-  if (!userObj) throw new Error('User not found')
-  if (!communityObj) throw new Error('Community not found')
-  await Community.updateOne({ _id: communityObj._id }, { $pull: { members: userObj._id } })
-  await User.updateOne({ _id: userObj._id }, { $pull: { communities: communityObj._id } })
-  return { success: true }
+export async function removeUserFromCommunity(
+  userId: string,
+  communityId: string
+) {
+  try {
+    connectToDB();
+
+    const userIdObject = await User.findOne({ id: userId }, { _id: 1 });
+    const communityIdObject = await Community.findOne(
+      { id: communityId },
+      { _id: 1 }
+    );
+
+    if (!userIdObject) {
+      throw new Error("User not found");
+    }
+
+    if (!communityIdObject) {
+      throw new Error("Community not found");
+    }
+
+    await Community.updateOne(
+      { _id: communityIdObject._id },
+      { $pull: { members: userIdObject._id } }
+    );
+
+    await User.updateOne(
+      { _id: userIdObject._id },
+      { $pull: { communities: communityIdObject._id } }
+    );
+
+    return { success: true };
+  } catch (error) {
+    // Handle any errors
+    console.error("Error removing user from community:", error);
+    throw error;
+  }
 }
 
 export async function updateCommunityInfo(
@@ -113,26 +227,51 @@ export async function updateCommunityInfo(
   username: string,
   image: string
 ) {
-  await connectToDB()
-  const updatedCommunity = await Community.findOneAndUpdate(
-    { id: communityId },
-    { name, username, image }
-  )
-  if (!updatedCommunity) throw new Error('Community not found')
-  return updatedCommunity
+  try {
+    connectToDB();
+
+    const updatedCommunity = await Community.findOneAndUpdate(
+      { id: communityId },
+      { name, username, image }
+    );
+
+    if (!updatedCommunity) {
+      throw new Error("Community not found");
+    }
+
+    return updatedCommunity;
+  } catch (error) {
+    console.error("Error updating community information:", error);
+    throw error;
+  }
 }
 
 export async function deleteCommunity(communityId: string) {
-  await connectToDB()
-  const deletedCommunity = await Community.findOneAndDelete({ id: communityId })
-  if (!deletedCommunity) throw new Error('Community not found')
-  await Thread.deleteMany({ community: communityId })
-  const communityUsers = await User.find({ communities: deletedCommunity._id })
-  await Promise.all(
-    communityUsers.map(user => {
-      user.communities.pull(deletedCommunity._id)
-      return user.save()
-    })
-  )
-  return deletedCommunity
+  try {
+    connectToDB();
+
+    const deletedCommunity = await Community.findOneAndDelete({
+      id: communityId,
+    });
+
+    if (!deletedCommunity) {
+      throw new Error("Community not found");
+    }
+
+    await Thread.deleteMany({ community: communityId });
+
+    const communityUsers = await User.find({ communities: communityId });
+
+    const updateUserPromises = communityUsers.map((user) => {
+      user.communities.pull(communityId);
+      return user.save();
+    });
+
+    await Promise.all(updateUserPromises);
+
+    return deletedCommunity;
+  } catch (error) {
+    console.error("Error deleting community: ", error);
+    throw error;
+  }
 }

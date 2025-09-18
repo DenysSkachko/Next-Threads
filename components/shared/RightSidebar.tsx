@@ -4,6 +4,9 @@ import UserCard from '../cards/UserCard'
 
 import { fetchCommunities } from '@/lib/actions/community.actions'
 import { fetchUsers } from '@/lib/actions/user.actions'
+import { Button } from '../ui/button'
+import Image from 'next/image'
+import UserPreview from '../cards/UserPreview'
 
 async function RightSidebar() {
   const user = await currentUser()
@@ -19,13 +22,15 @@ async function RightSidebar() {
   return (
     <section className="custom-scrollbar rightsidebar">
       <div className="flex flex-1 flex-col justify-start">
-        <h3 className="text-heading4-medium text-light-1">Suggested Communities</h3>
+        <Button type="button" className="bg-light-2 text-dark-2 ">
+          Suggested Communities
+        </Button>
 
-        <div className="mt-7 flex w-[350px] flex-col gap-9">
+        <div className="mt-7 flex flex-col gap-9">
           {suggestedCOmmunities.communities.length > 0 ? (
             <>
               {suggestedCOmmunities.communities.map(community => (
-                <UserCard
+                <UserPreview
                   key={community.id}
                   id={community.id}
                   name={community.name}
@@ -42,12 +47,14 @@ async function RightSidebar() {
       </div>
 
       <div className="flex flex-1 flex-col justify-start">
-        <h3 className="text-heading4-medium text-light-1">Similar Minds</h3>
-        <div className="mt-7 flex w-[350px] flex-col gap-10">
+        <Button type="button" className="bg-light-2 text-dark-2 ">
+          Similar Minds
+        </Button>
+        <div className="mt-7 flex flex-col w-70 gap-10">
           {similarMinds.users.length > 0 ? (
             <>
               {similarMinds.users.map(person => (
-                <UserCard
+                <UserPreview
                   key={person.id}
                   id={person.id}
                   name={person.name}

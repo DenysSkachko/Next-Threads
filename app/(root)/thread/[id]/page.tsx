@@ -20,14 +20,14 @@ const Page = async ({ params }: PageProps) => {
   if (!userInfo?.onboarded) redirect('/onboarding')
 
   const thread = await fetchThreadById(id)
-  if (!thread) return <div>Тред не найден</div>
+  if (!thread) return (<div>Тред не найден</div>)
 
   return (
     <section className="relative">
       <div>
         <ThreadCard
-          key={thread._id.toString()}
-          id={thread._id.toString()}
+          key={thread._id}
+          id={thread._id}
           currentUserId={user?.id || ''}
           parentId={thread.parentId?.toString() || null}
           content={thread.text}
@@ -45,7 +45,7 @@ const Page = async ({ params }: PageProps) => {
         />
       </div>
 
-      <div className="mt-10">
+      <div className="mt-0 flex flex-col gap-2">
         {thread.children.map((childItem: any) => (
           <ThreadCard
             key={childItem._id.toString()}

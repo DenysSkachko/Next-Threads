@@ -2,25 +2,10 @@
 
 import { FilterQuery, SortOrder } from 'mongoose'
 import { revalidatePath } from 'next/cache'
-
-import Community from '../models/community.model'
-import Thread from '../models/thread.model'
-import User from '../models/user.model'
-
+import Community from '@/lib/models/community.model'
+import Thread from '@/lib/models/thread.model'
+import User from '@/lib/models/user.model'
 import { connectToDB } from '../mongoose'
-
-export async function fetchUser(userId: string) {
-  try {
-    connectToDB()
-
-    return await User.findOne({ id: userId }).populate({
-      path: 'communities',
-      model: Community,
-    })
-  } catch (error: any) {
-    throw new Error(`Failed to fetch user: ${error.message}`)
-  }
-}
 
 interface Params {
   userId: string
@@ -29,6 +14,19 @@ interface Params {
   bio: string
   image: string
   path: string
+}
+
+export async function fetchUser(userId: string) {
+  try {
+    await connectToDB()
+
+    return await User.findOne({ id: userId }).populate({
+      path: 'communities',
+      model: Community,
+    })
+  } catch (error: any) {
+    throw new Error(`Failed to fetch user: ${error.message}`)
+  }
 }
 
 export async function updateUser({
@@ -40,7 +38,7 @@ export async function updateUser({
   image,
 }: Params): Promise<void> {
   try {
-    connectToDB()
+    await connectToDB()
 
     await User.findOneAndUpdate(
       { id: userId },
@@ -64,7 +62,7 @@ export async function updateUser({
 
 export async function fetchUserPosts(userId: string) {
   try {
-    connectToDB()
+    await connectToDB()
 
     const threads = await User.findOne({ id: userId }).populate({
       path: 'threads',
@@ -107,7 +105,7 @@ export async function fetchUsers({
   sortBy?: SortOrder
 }) {
   try {
-    connectToDB()
+    await connectToDB()
 
     const skipAmount = (pageNumber - 1) * pageSize
 
@@ -140,7 +138,7 @@ export async function fetchUsers({
 
 export async function getActivity(userId: string) {
   try {
-    connectToDB()
+    await connectToDB()
 
     const userThreads = await Thread.find({ author: userId })
 

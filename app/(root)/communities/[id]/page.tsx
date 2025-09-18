@@ -1,36 +1,24 @@
-
-
-import Image from "next/image";
-import { communityTabs } from "@/constants";
-import UserCard from "@/components/cards/UserCard";
-import ThreadsTab from "@/components/shared/ThreadsTab";
-import ProfileHeader from "@/components/shared/ProfileHeader";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { fetchCommunityDetails } from "@/lib/actions/community.actions";
-import { currentUser } from "@clerk/nextjs/server";
+import ProfileHeader from '@/components/shared/ProfileHeader'
+import { fetchCommunityDetails } from '@/lib/actions/community.actions'
+import { currentUser } from '@clerk/nextjs/server'
+import ThreadsTab from '@/components/shared/ThreadsTab'
+import UserCard from '@/components/cards/UserCard'
+import Tabs from '@/components/shared/Tabs'
 
 interface PageProps {
-  params: { id: string | string[] }
+  params: Promise<{ id: string | string[] }>
 }
 
 export default async function Page({ params }: PageProps) {
-  console.log('--- PAGE START ---')
-  console.log('Server Params:', params)
+  const { id } = await params
+  if (!id) return null
 
-  const user = await currentUser();
-  console.log('Server Current user:', user)
+  const user = await currentUser()
   if (!user) return <div>Пользователь не авторизован</div>
 
-  const communityId = Array.isArray(params.id) ? params.id[0] : params.id
-  console.log('Server communityId:', communityId)
-
+  const communityId = Array.isArray(id) ? id[0] : id
   const communityDetails = await fetchCommunityDetails(communityId)
-  console.log('Server Community details raw:', communityDetails)
-
-  if (!communityDetails) {
-    console.warn('Сообщество не найдено для id:', communityId)
-    return <div>Сообщество не найдено</div>
-  }
+  if (!communityDetails) return <div>Сообщество не найдено</div>
 
   return (
     <section>
@@ -41,66 +29,42 @@ export default async function Page({ params }: PageProps) {
         username={communityDetails.username}
         imgUrl={communityDetails.image}
         bio={communityDetails.bio}
-        type='Community'
+        type="Community"
       />
 
-      <div className='mt-9'>
-        <Tabs defaultValue='threads' className='w-full'>
-          <TabsList className='tab'>
-            {communityTabs.map(tab => (
-              <TabsTrigger key={tab.label} value={tab.value} className='tab'>
-                <Image
-                  src={tab.icon}
-                  alt={tab.label}
-                  width={24}
-                  height={24}
-                  className='object-contain'
-                />
-                <p className='max-sm:hidden'>{tab.label}</p>
-
-                {tab.label === "Threads" && (
-                  <p className='ml-1 rounded-sm bg-light-4 px-2 py-1 !text-tiny-medium text-light-2'>
-                    {communityDetails.threads?.length ?? 0}
-                  </p>
-                )}
-              </TabsTrigger>
-            ))}
-          </TabsList>
-
-          <TabsContent value='threads' className='w-full text-light-1'>
-            {/* @ts-ignore */}
-            <ThreadsTab
-              currentUserId={user.id}
-              accountId={communityDetails._id.toString()}
-              accountType='Community'
-            />
-          </TabsContent>
-
-          <TabsContent value='members' className='mt-9 w-full text-light-1'>
-            <section className='mt-9 flex flex-col gap-10'>
-              {communityDetails.members?.map((member: any) => (
-                <UserCard
-                  key={member.id}
-                  id={member.id}
-                  name={member.name}
-                  username={member.username}
-                  imgUrl={member.image}
-                  personType='User'
-                />
-              ))}
-            </section>
-          </TabsContent>
-
-          <TabsContent value='requests' className='w-full text-light-1'>
-            {/* @ts-ignore */}
-            <ThreadsTab
-              currentUserId={user.id}
-              accountId={communityDetails._id.toString()}
-              accountType='Community'
-            />
-          </TabsContent>
-        </Tabs>
-      </div>
+      <Tabs
+        tabs={[
+          {
+            label: 'Threads',
+            count: communityDetails.threads?.length ?? 0,
+            content: (
+              <ThreadsTab
+                currentUserId={user.id}
+                accountId={communityDetails._id.toString()}
+                accountType="Community"
+              />
+            ),
+          },
+          {
+            label: 'Members',
+            count: communityDetails.members?.length ?? 0,
+            content: (
+              <section className="flex flex-col gap-6 mt-4">
+                {communityDetails.members?.map((member: any) => (
+                  <UserCard
+                    key={member.id}
+                    id={member.id}
+                    name={member.name}
+                    username={member.username}
+                    imgUrl={member.image}
+                    personType="User"
+                  />
+                ))}
+              </section>
+            ),
+          },
+        ]}
+      />
     </section>
   )
 }

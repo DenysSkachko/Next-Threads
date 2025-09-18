@@ -25,8 +25,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Topbar />
           <main className="flex">
             <LeftSidebar />
-            <section className="main-container">
+            <section className="main-container gap-10">
               <div className="w-full max-w-4xl">{children}</div>
+              <div className="w-30 h-100 max-xl:hidden">
+                <img src="/project5.webp" alt="" className="object-cover h-full " />
+              </div>
             </section>
             <RightSidebar />
           </main>

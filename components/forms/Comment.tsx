@@ -5,7 +5,7 @@ import Image from 'next/image'
 import { useForm } from 'react-hook-form'
 import { usePathname } from 'next/navigation'
 import { zodResolver } from '@hookform/resolvers/zod'
-
+import { IoIosSend } from 'react-icons/io'
 import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form'
 
 import { Input } from '../ui/input'
@@ -13,6 +13,7 @@ import { Button } from '../ui/button'
 
 import { CommentValidation } from '@/lib/validation/thread'
 import { addCommentToThread } from '@/lib/actions/thread.actions'
+import ButtonSmall from '../ui/button-small'
 
 interface Props {
   threadId: string
@@ -38,12 +39,15 @@ function Comment({ threadId, currentUserImg, currentUserId }: Props) {
 
   return (
     <Form {...form}>
-      <form className="comment-form" onSubmit={form.handleSubmit(onSubmit)}>
+      <form
+        className="flex items-center gap-2  pt-4 pb-10 px-2"
+        onSubmit={form.handleSubmit(onSubmit)}
+      >
         <FormField
           control={form.control}
           name="thread"
           render={({ field }) => (
-            <FormItem className="flex w-full items-center gap-3">
+            <FormItem className="flex w-full items-center gap-3 ">
               <FormLabel>
                 <Image
                   src={currentUserImg}
@@ -53,21 +57,21 @@ function Comment({ threadId, currentUserImg, currentUserId }: Props) {
                   className="rounded-full object-cover"
                 />
               </FormLabel>
-              <FormControl className="border-none bg-transparent">
+              <FormControl className="border-none bg-light-1">
                 <Input
                   type="text"
                   {...field}
                   placeholder="Comment..."
-                  className="no-focus text-light-1 outline-none"
+                  className="no-focus text-dark-2 outline-none"
                 />
               </FormControl>
             </FormItem>
           )}
         />
 
-        <Button type="submit" className="comment-form_btn">
-          Reply
-        </Button>
+        <ButtonSmall type="submit" className="bg-primary-500">
+          <IoIosSend size={30} className="text-light-1"/>
+        </ButtonSmall>
       </form>
     </Form>
   )

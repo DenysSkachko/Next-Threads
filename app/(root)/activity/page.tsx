@@ -1,3 +1,4 @@
+import PageLabel from '@/components/ui/label-page'
 import { fetchUser, fetchUsers, getActivity } from '@/lib/actions/user.actions'
 import { currentUser } from '@clerk/nextjs/server'
 import Image from 'next/image'
@@ -15,7 +16,7 @@ export default async function Page() {
 
   return (
     <section>
-      <h1 className="head-text mb-10"> Activity </h1>
+      <PageLabel>Activity</PageLabel>
 
       <div className="mt-10 flex flex-col gap-5">
         {activity.length > 0 ? (
@@ -31,7 +32,8 @@ export default async function Page() {
                     className="rounded-full object-contain"
                   />
                   <p className="text-small-regular text-light-1">
-                    <span className='mr-1 text-primary-500'>{activity.author.name}</span>{" "} replies to your thread
+                    <span className="mr-1 text-primary-500">{activity.author.name}</span> replies to
+                    your thread
                   </p>
                 </article>
               </Link>
