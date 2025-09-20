@@ -7,7 +7,7 @@ const Topbar = () => {
   return (
     <nav className="topbar">
       <Link href="/" className="flex items-center gap-4">
-        <p className="text-heading3-bold text-light-2 tracking-widest max-xs:hidden">Proxiel</p>
+        <p className="text-heading3-bold text-light-2 tracking-widest max-xs:hidden">Proxima Threads</p>
       </Link>
 
       <div className="flex items-center gap-1">

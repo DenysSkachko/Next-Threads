@@ -1,5 +1,5 @@
-
 import PostThread from '@/components/forms/PostThread'
+import PageLabel from '@/components/ui/label-page'
 import { fetchUser } from '@/lib/actions/user.actions'
 import { currentUser } from '@clerk/nextjs/server'
 import { redirect } from 'next/navigation'
@@ -14,9 +14,9 @@ async function Page() {
 
   return (
     <>
-      <h1 className="head-text">Create Thread</h1>
+      <PageLabel>Create Thread</PageLabel>
 
-      <PostThread userId={`${userInfo._id}`}  />
+      <PostThread userId={`${userInfo._id}`} />
     </>
   )
 }

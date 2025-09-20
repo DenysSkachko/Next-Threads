@@ -7,6 +7,7 @@ import CommunityCard from '@/components/cards/CommunityCard'
 
 import { fetchUser } from '@/lib/actions/user.actions'
 import { fetchCommunities } from '@/lib/actions/community.actions'
+import PageLabel from '@/components/ui/label-page'
 
 interface PageProps {
   searchParams: Promise<{ [key: string]: string | undefined }>
@@ -30,7 +31,9 @@ export default async function Page({ searchParams }: PageProps) {
 
   return (
     <>
-      <h1 className="head-text">Communities</h1>
+      <PageLabel>
+        Communities
+      </PageLabel>
 
       <div className="mt-5">
         <Searchbar routeType="communities" />
