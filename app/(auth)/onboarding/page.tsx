@@ -20,14 +20,13 @@ async function Page() {
   }
 
   return (
-    <main className="mx-auto dlex max-w-3xl flex-col justify-start px-10 py-10">
+    <main className="mx-auto flex max-w-3xl flex-col justify-start px-10 py-10 items-center">
       <h1 className="head-text">Onboarding</h1>
       <p className="mt-3 text-base-regular text-light-1">
-        {' '}
         Complete your profile now to use Threads
       </p>
 
-      <section className="mt-9 bg-dark-2 p-10">
+      <section className="mt-5 bg-dark-4 p-10 rounded-2xl">
         <AccountProfile user={userData} btnTitle="Continue" />
       </section>
     </main>

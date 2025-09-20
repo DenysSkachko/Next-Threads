@@ -104,7 +104,7 @@ const AccountProfile = ({ user, btnTitle }: AccountProfileProps) => {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col justify-start gap-10">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col justify-start gap-5">
         <FormField
           control={form.control}
           name="profile_photo"
@@ -118,7 +118,7 @@ const AccountProfile = ({ user, btnTitle }: AccountProfileProps) => {
                     width={96}
                     height={96}
                     priority
-                    className="rounded-full object-contain"
+                    className="rounded-full object-cover"
                   />
                 ) : (
                   <Image
@@ -181,7 +181,7 @@ const AccountProfile = ({ user, btnTitle }: AccountProfileProps) => {
             </FormItem>
           )}
         />
-        <Button type="submit" className="bg-primary-500">
+        <Button type="submit" className="bg-primary-500 hover:bg-primary-500/70 text-light-1 transition-all duration-300">
           Submit
         </Button>
       </form>

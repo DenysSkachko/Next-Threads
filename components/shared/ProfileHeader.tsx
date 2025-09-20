@@ -21,7 +21,7 @@ const ProfileHeader = ({ accountId, authUserId, name, username, imgUrl, bio, typ
               src={imgUrl}
               alt="Profile Image"
               fill
-              className="rounded-full object-contain shadow-2xl"
+              className="rounded-full object-cover shadow-2xl"
             />
           </div>
 
@@ -33,7 +33,7 @@ const ProfileHeader = ({ accountId, authUserId, name, username, imgUrl, bio, typ
 
         {accountId === authUserId && type !== 'Community' && (
           <Link href="/profile/edit">
-            <div className="flex cursor-pointer gap-3 rounded-lg bg-gray-1 px-4 py-2">
+            <div className="flex cursor-pointer gap-3 rounded-lg bg-light-1 text-dark-2 px-4 py-2">
               <Image src="/edit.svg" alt="logout" width={16} height={16} />
 
               <p className="text-dark-2 max-sm:hidden">Edit</p>
