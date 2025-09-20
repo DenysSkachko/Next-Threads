@@ -38,7 +38,7 @@ async function Page({
         <Searchbar routeType="search" />
       </div>
 
-      <div className="mt-4 flex flex-col gap-9">
+      <div className="mt-4 flex flex-col gap-4">
         {result.users.length === 0 ? (
           <p className="no-result">No Result</p>
         ) : (
